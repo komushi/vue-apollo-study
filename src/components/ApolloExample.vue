@@ -51,19 +51,50 @@
       </div>
     </ApolloQuery>
 
-    <div class="form">
+    <ApolloMutation
+      :mutation="require('../graphql/AddMessage.gql')"
+      :variables="{
+        input: {
+          text: newMessage,
+        },
+      }"
+      class="form"
+      @done="newMessage = ''"
+    >
+      <template slot-scope="{ mutate }">
+        <input
+          v-model="newMessage"
+          placeholder="Type a message"
+          class="input"
+          @keyup.enter="formValid && mutate()"
+        >
+      </template>
+    </ApolloMutation>
+
+    <div class="images">
+      <div
+        v-for="file of files"
+        :key="file.id"
+        class="image-item"
+      >
+        <img :src="`${$filesRoot}/${file.path}`" class="image"/>
+      </div>
+    </div>
+
+    <div class="image-input">
       <input
-        v-model="newMessage"
-        placeholder="Type a message"
-        class="input"
-        @keyup.enter="sendMessage"
+        type="file"
+        accept="image/*"
+        required
+        @change="onUploadImage"
       >
     </div>
   </div>
 </template>
 
 <script>
-import MESSAGE_ADD_MUTATION from '../graphql/MessageAdd.gql'
+import FILES from '../graphql/Files.gql'
+import UPLOAD_FILE from '../graphql/UploadFile.gql'
 
 export default {
   data () {
@@ -73,6 +104,10 @@ export default {
     }
   },
 
+  apollo: {
+    files: FILES,
+  },
+
   computed: {
     formValid () {
       return this.newMessage
@@ -80,21 +115,6 @@ export default {
   },
 
   methods: {
-    sendMessage () {
-      if (this.formValid) {
-        this.$apollo.mutate({
-          mutation: MESSAGE_ADD_MUTATION,
-          variables: {
-            input: {
-              text: this.newMessage,
-            },
-          },
-        })
-
-        this.newMessage = ''
-      }
-    },
-
     onMessageAdded (previousResult, { subscriptionData }) {
       return {
         messages: [
@@ -103,6 +123,21 @@ export default {
         ],
       }
     },
+
+    async onUploadImage ({ target }) {
+      if (!target.validity.valid) return
+      await this.$apollo.mutate({
+        mutation: UPLOAD_FILE,
+        variables: {
+          file: target.files[0],
+        },
+        update: (store, { data: { singleUpload } }) => {
+          const data = store.readQuery({ query: FILES })
+          data.files.push(singleUpload)
+          store.writeQuery({ query: FILES, data })
+        },
+      })
+    }
   },
 }
 </script>
@@ -124,5 +159,29 @@ export default {
 
 .error {
   color: red;
+}
+
+.images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 300px);
+  grid-auto-rows: 300px;
+  grid-gap: 10px;
+}
+
+.image-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ccc;
+  border-radius: 8px;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.image-input {
+  margin: 20px;
 }
 </style>

@@ -1,8 +1,23 @@
 # vue-apollo-study
 
 **Tutorial/Example of a Vue.js app using Apollo GraphQL**
+:warning: No need to clone this repo. Just create and run the demo by following this markdown.
 
-## 1. How was this study project created.
+## 0. Preparation
+### 0-1. Check Node version
+:warning: Vue CLI requires Node.js version 8.9 or above (8.11.0+ recommended)
+```
+node -v
+```
+
+### 0-2. Check vue-cli version
+:warning: Make sure you have vue-cli 3.x.x:
+```
+vue --version
+```
+
+
+## 1. How was this study project created
 ### 1-1. Create this project with Vue CLI v3+
 ```
 $ vue create vue-apollo-study
@@ -20,7 +35,7 @@ $ vue add apollo
 
 ```
 
-### 1-3. Edit App.vue to inclued the ApolloExample.vue
+### 1-3. Edit App.vue to inclued the ApolloExample.vue - below is the expected code
 ```
 <template>
   <div id="app">
@@ -55,7 +70,7 @@ export default {
 </style>
 ```
 
-### 1-4. Edit main.js to include vue-apollo provider
+### 1-4. Edit main.js to include vue-apollo provider - below is the expected code
 ```
 import Vue from 'vue'
 import App from './App.vue'
@@ -73,7 +88,7 @@ new Vue({
 ## 2. Quick Start to run the ApolloExample
 ### 2-1. Start the GraphQL API Server
 ```
-$ npm run graphql-api
+$ npm run apollo:run
 ```
 
 ### 2-2. Access http://localhost:4000/ and test the following queries

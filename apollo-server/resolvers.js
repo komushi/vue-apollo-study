@@ -1,8 +1,8 @@
-const GraphQLJSON = require('graphql-type-json')
-const shortid = require('shortid')
+import GraphQLJSON from 'graphql-type-json'
+import shortid from 'shortid'
 
 
-module.exports = {
+export default {
   JSON: GraphQLJSON,
 
   Counter: {
@@ -23,7 +23,7 @@ module.exports = {
       context.pubsub.publish('hey', { mySub: message })
       return message
     },
-    messageAdd: (root, { input }, { pubsub, db }) => {
+    addMessage: (root, { input }, { pubsub, db }) => {
       const message = {
         id: shortid.generate(),
         text: input.text,

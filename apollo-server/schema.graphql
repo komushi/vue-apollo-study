@@ -1,6 +1,18 @@
+# Included scalars
 scalar JSON
+scalar Upload
 
+# Included directives
 
+# Cache control
+directive @cacheControl(
+  maxAge: Int,
+  scope: CacheControlScope
+) on OBJECT | FIELD_DEFINITION
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
 
 # It will increment!
 type Counter {
@@ -23,8 +35,6 @@ input MessageInput {
   text: String!
 }
 
-scalar Upload
-
 type File {
   id: ID!
   path: String!
@@ -46,7 +56,7 @@ type Query {
 type Mutation {
   myMutation: String!
   # Add a message and publish it on 'messages' subscription channel
-  messageAdd (input: MessageInput!): Message!
+  addMessage (input: MessageInput!): Message!
   singleUpload (file: Upload!): File!
   multipleUpload (files: [Upload!]!): [File!]!
 
